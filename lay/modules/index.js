@@ -12,6 +12,12 @@ layui.define(['jquery','layer', 'form', 'element'], function(exports){
         $(".layui-nav").find('a').click(function(e){
             e.preventDefault();
         });
+        //动态生成的元素使用on方法绑定事件！
+        /*$(".layui-nav").on("click","a",function(e){
+          e.preventDefault();
+        })*/
+  }
+  jqIndex.prototype.webOnPc = function(){
 
          //监听左侧导航新增tab页签
         element.on('nav(left-nav)', function(elem){
@@ -24,10 +30,6 @@ layui.define(['jquery','layer', 'form', 'element'], function(exports){
                 active.navTabChange(fromeDom);
             }
         });
-
-
-  }
-  jqIndex.prototype.webOnPc = function(){
         //监听顶部导航,加载更多子菜单和加载左侧菜单
         element.on('nav(top-nav)', function(elem){
             $(".show-more-menu .layui-nav-child").removeClass("layui-show");
@@ -52,9 +54,14 @@ layui.define(['jquery','layer', 'form', 'element'], function(exports){
              action.showFirstMenu(target);
       })
 
+      $('#phoneright').click(function(e){
+            e.stopPropagation();
+            action.showLeftNav();
+      })
+
       //监听配置菜单事件，如果点击后 隐藏或者显示配置菜单区域
-            $('.main-menu').find('a').click(function(e){
-                // e.stopPropagation();
+            $('.main-menu').on('click','a',function(){
+               // e.stopPropagation();
                 var leveA = $(this);
                 var aL = leveA.next().length;
                 var aPd= leveA.parent();
@@ -67,11 +74,20 @@ layui.define(['jquery','layer', 'form', 'element'], function(exports){
                     action.showFirstMenu(target);
                     action.showLeftNav();
                 }
-            })
+              })
 
-        //监听左侧导航新增tab页签,移动端情况点击后需要隐藏
+         //监听左侧导航新增tab页签
         element.on('nav(left-nav)', function(elem){
-           action.hideLeftNav();
+            var fromeDom   = $(elem).children('a'),
+                toDom      = $(".layui-tab-title").find('li');
+            if ( ! util.compareId (fromeDom,toDom ) ) {
+                active.tabAdd(fromeDom);
+                active.navTabChange(fromeDom);
+                action.hideLeftNav();
+            }else{
+                active.navTabChange(fromeDom);
+                action.hideLeftNav();
+            }
         });
 
   }
